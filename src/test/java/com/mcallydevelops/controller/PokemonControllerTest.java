@@ -28,10 +28,11 @@ class PokemonControllerTest {
 
     @ParameterizedTest
     @MethodSource("getPokemonByName_source")
-    void getPokemonByName(String name) {
+    void getPokemonByName(Integer id, String name) {
         //arrange
         Map<String, Object> queryResult = new HashMap<>();
-        queryResult.put("name", name);
+        queryResult.put("NAME", name);
+        queryResult.put("ID", id);
         when(jdbcTemplate.queryForList("SELECT * FROM POKEMON where name = ?", name))
                 .thenReturn(Collections.singletonList(queryResult));
         //act
@@ -40,14 +41,15 @@ class PokemonControllerTest {
         //assert
         verify(jdbcTemplate).queryForList("SELECT * FROM POKEMON where name = ?", name);
         assertEquals(name, result.getName());
+        assertEquals(id, result.getId());
     }
 
     static Stream<Arguments> getPokemonByName_source() {
         return Stream.of(
-                Arguments.of("Pikachu"),
-                Arguments.of("Bulbasaur"),
-                Arguments.of("Charmander"),
-                Arguments.of("Squirtle")
+                Arguments.of(1, "Pikachu"),
+                Arguments.of(2, "Bulbasaur"),
+                Arguments.of(3, "Charmander"),
+                Arguments.of(4, "Squirtle")
         );
     }
 

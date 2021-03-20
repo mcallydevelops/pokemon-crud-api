@@ -23,9 +23,9 @@ public class PokemonController {
     }
     @GetMapping("/name/{name}")
     public Pokemon getPokemonByName(@PathVariable String name) {
-        Pokemon pokemon = new Pokemon();
-        List<Map<String, Object>> pokemonList = jdbcTemplate.queryForList("SELECT * FROM POKEMON where name = ?", name);
-        pokemon.setName(pokemonList.get(0).get("name").toString());
-        return pokemon;
+        List<Map<String, Object>> pokemonList = jdbcTemplate.queryForList("SELECT ID, NAME FROM POKEMON WHERE NAME = ?", name);
+        String pokemonName = pokemonList.get(0).get("NAME").toString();
+        Integer id = (Integer) pokemonList.get(0).get("ID");
+        return new Pokemon(id, pokemonName);
     }
 }
