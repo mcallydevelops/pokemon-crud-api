@@ -1,5 +1,6 @@
 package com.mcallydevelops.controller;
 
+import com.mcallydevelops.exceptions.PokemonNotFoundException;
 import com.mcallydevelops.models.Pokemon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,13 @@ class PokemonControllerTest {
         Map<String, Object> queryResult = new HashMap<>();
         queryResult.put("NAME", name);
         queryResult.put("ID", id);
-        when(jdbcTemplate.queryForList("SELECT * FROM POKEMON where name = ?", name))
+        when(jdbcTemplate.queryForList("SELECT ID, NAME FROM POKEMON WHERE NAME = ?", name))
                 .thenReturn(Collections.singletonList(queryResult));
         //act
         Pokemon result = pokemonController.getPokemonByName(name);
 
         //assert
-        verify(jdbcTemplate).queryForList("SELECT * FROM POKEMON where name = ?", name);
+        verify(jdbcTemplate).queryForList("SELECT ID, NAME FROM POKEMON WHERE NAME = ?", name);
         assertEquals(name, result.getName());
         assertEquals(id, result.getId());
     }
@@ -51,6 +52,16 @@ class PokemonControllerTest {
                 Arguments.of(3, "Charmander"),
                 Arguments.of(4, "Squirtle")
         );
+    }
+
+    @Test
+    void getPokemonByNameNotFound() {
+        when(jdbcTemplate.queryForList("SELECT ID, NAME FROM POKEMON WHERE NAME = ?", "Pikachu"))
+                .thenReturn(Collections.emptyList());
+
+        assertThrows(PokemonNotFoundException.class, () -> pokemonController.getPokemonByName("Pikachu"));
+
+
     }
 
 }
