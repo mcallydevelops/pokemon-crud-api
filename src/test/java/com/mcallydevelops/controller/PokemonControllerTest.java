@@ -3,15 +3,18 @@ package com.mcallydevelops.controller;
 import com.mcallydevelops.models.Pokemon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PokemonControllerTest {
 
@@ -23,17 +26,29 @@ class PokemonControllerTest {
         pokemonController = new PokemonController(jdbcTemplate);
     }
 
-    @Test
-    void getPokemonByName() {
+    @ParameterizedTest
+    @MethodSource("getPokemonByName_source")
+    void getPokemonByName(String name) {
         //arrange
         Map<String, Object> queryResult = new HashMap<>();
-        queryResult.put("name", "Pikachu");
-        when(jdbcTemplate.queryForList("SELECT * FROM POKEMON where name = ?", "Pikachu"))
+        queryResult.put("name", name);
+        when(jdbcTemplate.queryForList("SELECT * FROM POKEMON where name = ?", name))
                 .thenReturn(Collections.singletonList(queryResult));
         //act
-        Pokemon result = pokemonController.getPokemonByName("Pikachu");
+        Pokemon result = pokemonController.getPokemonByName(name);
 
         //assert
-        assertEquals("Pikachu", result.getName());
+        verify(jdbcTemplate).queryForList("SELECT * FROM POKEMON where name = ?", name);
+        assertEquals(name, result.getName());
     }
+
+    static Stream<Arguments> getPokemonByName_source() {
+        return Stream.of(
+                Arguments.of("Pikachu"),
+                Arguments.of("Bulbasaur"),
+                Arguments.of("Charmander"),
+                Arguments.of("Squirtle")
+        );
+    }
+
 }

@@ -2,23 +2,23 @@ package com.mcallydevelops.models;
 
 public class Pokemon {
 
-    public Integer idl;
+    public Integer id;
     public String name;
 
     public Pokemon() {
     }
 
-    public Pokemon(Integer idl, String name) {
-        this.idl = idl;
+    public Pokemon(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public Integer getIdl() {
-        return idl;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdl(Integer idl) {
-        this.idl = idl;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
