@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PokemonControllerIT {
+public class PokemonControllerIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -35,7 +35,6 @@ public class PokemonControllerIT {
         ResponseEntity response = restTemplate.exchange("http://localhost:" + port + "/api/v1/pokemon/name/Bob", HttpMethod.GET, HttpEntity.EMPTY, String.class);
         HttpStatus httpStatusCode = response.getStatusCode();
         assertEquals(HttpStatus.NOT_FOUND, httpStatusCode);
-        assertEquals("Not Found", response.getBody());
     }
 
 }
