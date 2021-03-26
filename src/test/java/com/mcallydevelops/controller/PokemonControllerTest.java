@@ -29,7 +29,7 @@ class PokemonControllerTest {
 
     @ParameterizedTest
     @MethodSource("getPokemonByName_source")
-    void getPokemonByName(Integer id, String name) {
+    void getPokemonByName(Integer id, String name) throws Exception {
         //arrange
         Map<String, Object> queryResult = new HashMap<>();
         queryResult.put("NAME", name);

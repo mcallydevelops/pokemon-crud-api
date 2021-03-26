@@ -6,15 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PokemonControllerIT {
@@ -35,8 +32,10 @@ public class PokemonControllerIT {
 
     @Test
     void getPokemonByNameWherePokemonNotFound() {
-        assertThrows(HttpClientErrorException.NotFound.class,
-                () -> restTemplate.getForEntity("http://localhost:" + port + "/api/v1/pokemon/name/Bob", Pokemon.class));
+        ResponseEntity response = restTemplate.exchange("http://localhost:" + port + "/api/v1/pokemon/name/Bob", HttpMethod.GET, HttpEntity.EMPTY, String.class);
+        HttpStatus httpStatusCode = response.getStatusCode();
+        assertEquals(HttpStatus.NOT_FOUND, httpStatusCode);
+        assertEquals("Not Found", response.getBody());
     }
 
 }
