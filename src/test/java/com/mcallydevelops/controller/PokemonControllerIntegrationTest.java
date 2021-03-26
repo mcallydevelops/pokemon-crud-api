@@ -35,6 +35,7 @@ public class PokemonControllerIntegrationTest {
         ResponseEntity response = restTemplate.exchange("http://localhost:" + port + "/api/v1/pokemon/name/Bob", HttpMethod.GET, HttpEntity.EMPTY, String.class);
         HttpStatus httpStatusCode = response.getStatusCode();
         assertEquals(HttpStatus.NOT_FOUND, httpStatusCode);
+        assertEquals("Not Found", response.getBody());
     }
 
 }
